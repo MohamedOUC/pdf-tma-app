@@ -20,5 +20,5 @@ def create_document(doc: schemas.DocumentCreate, db: Session = Depends(get_db)):
     return db_doc
 
 @router.get("/documents/", response_model=list[schemas.Document])
-def get_documents(db: Session = Depends(databse.get_db)):
+def get_documents(db: Session = Depends(database.get_db)):
     return db.query(models.Document).all()

@@ -1,0 +1,18 @@
+# Fichiers Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Venv
+venv/
+.env
+
+# IDE / outils
+.vscode/
+*.log
+*.db
+.DS_Store
+
+# Git
+.git/
+.gitignore
