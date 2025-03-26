@@ -1,21 +1,18 @@
-# frontend/Dockerfile
+# Étape 1 : builder l'app Vue
+FROM node:18 AS builder
 
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# Étape 2 : serveur statique pour servir le build
 FROM node:18
-
-# Dossier de travail dans le conteneur
 WORKDIR /app
 
-# Copier les fichiers de dépendances
-COPY package*.json ./
+RUN npm install -g serve
+COPY --from=builder /app/dist ./dist
 
-# Installer les dépendances
-RUN npm install
-
-# Copier le reste de l’app
-COPY . .
-
-# Exposer le port Vite (par défaut 5173)
 EXPOSE 5173
-
-# Lancer le serveur de dev Vite
-CMD ["npm", "run", "dev", "--", "--host"]
+CMD ["serve", "-s", "dist", "-l", "5173"]

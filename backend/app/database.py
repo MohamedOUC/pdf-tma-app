@@ -18,6 +18,9 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # Base = classe mère qui permet de faire des requêtes SQL
 Base = declarative_base()
 
+# Permet de créer une table automatiquement si elle n'existe pas 
+Base.metadata.create_all(bind=engine)
+
 # get_db = fonction à importer dans mon backend/app/database.py
 def get_db():
     db = SessionLocal()

@@ -4,6 +4,10 @@ class DocumentBase(BaseModel):
     title: str
     content: str
     
+class DocumentUpdate(BaseModel):
+    title: str
+    content: str
+    
 class DocumentCreate(DocumentBase):
     pass
 
