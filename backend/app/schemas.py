@@ -4,7 +4,7 @@ class DocumentBase(BaseModel):
     title: str
     content: str
     
-class DocumentCreate(BaseModel):
+class DocumentCreate(DocumentBase):
     pass
 
 class Document(BaseModel):
