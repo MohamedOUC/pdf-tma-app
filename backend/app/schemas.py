@@ -11,7 +11,7 @@ class DocumentUpdate(BaseModel):
 class DocumentCreate(DocumentBase):
     pass
 
-class Document(BaseModel):
+class Document(DocumentBase):
     id: int
     
     class Config:
