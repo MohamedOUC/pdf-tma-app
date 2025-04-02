@@ -1,8 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from .. import models, schemas, database
+from typing import Optional
+import os
+import shutil
+
 
 router = APIRouter()
+UPLOAD_DIR = "uploads"
+if not os.path.exists(UPLOAD_DIR):
+    os.makedirs(UPLOAD_DIR)
 
 def get_db():
     db = database.SessionLocal()
@@ -49,6 +56,30 @@ def update_document(doc_id: int, update: schemas.DocumentCreate, db: Session = D
         raise HTTPException(status_code=404, detail="Document non trouvé")
     doc.title = update.title
     doc.content = update.content
+    db.commit()
+    db.refresh(doc)
+    return doc
+
+# Route pour upload des fichiers
+@router.post("/documents/uploads", response_model=schemas.Document)
+async def upload_document(
+    title: str = Form(...),
+    content: str = Form(...),
+    file: Optional[UploadFile] = File(None), # Facultatif
+    db: Session = Depends(get_db)
+):
+    file_path = None
+    
+    if file:
+        UPLOAD_DIR = "uploads"
+        if not os.path.exists(UPLOAD_DIR):
+            os.makedirs(UPLOAD_DIR)
+        file_path = f"{UPLOAD_DIR}/{file.filename}"
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+    doc = models.Document(title=title, content=content, file_path=file_path)
+    db.add(doc)
     db.commit()
     db.refresh(doc)
     return doc

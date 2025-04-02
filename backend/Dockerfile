@@ -2,7 +2,7 @@
 
 FROM python:3.12
 
-# Set working directory
+# Définir un répertoire de travail
 WORKDIR /app
 
 # Installer les dépendances système utiles

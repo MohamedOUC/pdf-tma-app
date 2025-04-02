@@ -7,6 +7,8 @@ services:
       - "8000:8000"
     environment:
       - DATABASE_URL=postgresql://user:pass@postgres:5432/pdf_db
+    volumes: 
+      - /home/oucht/pdf-tma-app/backend/app/uploads:/app/uploads
     depends_on:
       postgres:
         condition: service_healthy

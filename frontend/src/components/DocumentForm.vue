@@ -4,8 +4,13 @@
       <form @submit.prevent="submitForm">
         <label>Titre :</label>
         <input v-model="title" type="text" required />
+
         <label>Contenu :</label>
         <textarea v-model="content" required></textarea>
+
+        <label>Fichier :</label>
+        <input type="file" @change="handleFileUpload"/>
+
         <button type="submit">Créer</button>
       </form>
     </div>
@@ -16,15 +21,25 @@
     data() {
       return {
         title: '',
-        content: ''
+        content: '',
+        file: null
       };
     },
     methods: {
+      handleFileUpload(e) {
+        this.file = e.target.files[0];
+      },
       async submitForm() {
-        const res = await fetch('http://localhost:8000/documents/', {
+        const formData = new FormData();
+        formData.append("title", this.title);
+        formData.append("content", this.content);
+        if(this.file) {
+          formData.append("file", this.file);
+        }
+        
+        const res = await fetch('http://localhost:8000/documents/uploads', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title: this.title, content: this.content })
+          body: formData
         });
         if (res.ok) {
           this.$emit('toast', {
@@ -33,6 +48,7 @@
           });
           this.title = '';
           this.content = '';
+          this.file = null;
         } else {
           this.$emit('toast', {
             message: "Erreur lors de la création ❌",
